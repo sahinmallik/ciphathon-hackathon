@@ -18,13 +18,13 @@ model User {
   name      String?
   createdAt DateTime          @default(now())
 
-  domains   VerifyOwnership[]
+  domains   Domain[]
 }
 
-model VerifyOwnership {
+model Domain {
   id          String   @id @default(uuid())
-  domainName  String
-  secretKey   String
+  domainName  String   @unique
+  secretKey   String   @unique
   isVerified  Boolean  @default(false)
   createdAt   DateTime @default(now())
   verifiedAt  DateTime?
@@ -32,6 +32,48 @@ model VerifyOwnership {
 
   userId      String
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  ssl         DomainSSL?
+  emailSecurity DomainEmailSecurity?   // ✅ ADD THIS
+
 
   @@index([domainName])
+}
+
+model DomainSSL {
+  id             String   @id @default(uuid())
+  valid          String
+  daysRemaining  Int
+  issuer         String
+  protocol       String
+  lastCheckedAt  DateTime @default(now())
+
+  domainId       String   @unique
+  domain         Domain   @relation(fields: [domainId], references: [id], onDelete: Cascade)
+}
+
+
+model DomainEmailSecurity {
+  id            String   @id @default(uuid())
+
+  domain        String
+
+  // SPF
+  spfExists     Boolean
+  spfRecord     String?
+
+  // DMARC
+  dmarcExists   Boolean
+  dmarcRecord   String?
+
+  // DKIM
+  dkimExists    String   // "true" | "false" | "likely"
+  dkimRecord    String?
+  dkimSelector  String?
+  dkimNote      String?
+
+  scannedAt     DateTime @default(now())
+
+  domainId      String   @unique
+  domainRef     Domain   @relation(fields: [domainId], references: [id], onDelete: Cascade)
 }

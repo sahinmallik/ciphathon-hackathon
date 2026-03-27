@@ -20,4 +20,11 @@ export namespace VerifyOwnershipModel {
 
   export type verifyOwnershipFailedResponse =
     typeof verifyOwnershipFailedResponse.static;
+
+  export const scanTXTRequest = t.Object({
+    domain: t.String(),
+    secretKey: t.String(),
+  });
+
+  export type scanTXTRequest = typeof scanTXTRequest.static;
 }
