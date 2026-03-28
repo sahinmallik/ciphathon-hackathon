@@ -1,5 +1,4 @@
 import { currentUser } from "@clerk/nextjs/server";
-import axios from "axios";
 
 export const checkUser = async () => {
   const user = await currentUser();
@@ -7,22 +6,29 @@ export const checkUser = async () => {
   if (!user) return null;
 
   try {
-    // FORCE THE FETCH ADAPTER HERE
-    const loggedInUser = await axios.post(
-      "http://localhost:8080/users",
-      {
+    const response = await fetch("http://localhost:8080/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
         name: user.fullName,
         email: user.primaryEmailAddress?.emailAddress,
         clerkId: user.id,
-      },
-      {
-        adapter: "fetch", // <--- Add this line
-      },
-    );
+      }),
+    });
 
-    return loggedInUser.data;
+    if (!response.ok) {
+      // Log the status if the backend returns an error (e.g., 400, 500)
+      const errorText = await response.text();
+      console.error(`Backend Error (${response.status}):`, errorText);
+      return null;
+    }
+
+    const loggedInUser = await response.json();
+    return loggedInUser;
   } catch (error: any) {
-    console.error("Axios Error:", error.message);
+    console.error("Fetch Error:", error.message);
     return null;
   }
 };
