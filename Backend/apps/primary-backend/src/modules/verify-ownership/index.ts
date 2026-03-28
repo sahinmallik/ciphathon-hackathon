@@ -13,6 +13,12 @@ export const verifyOwnership = new Elysia()
         },
       });
 
+      const user = await prisma.user.findUnique({
+        where: {
+          clerkId: body.clerkId,
+        },
+      });
+
       if (!result) {
         const secretKey = await VerifyOwnershipAction.generateSecretKey(
           body.clerkId,
@@ -26,10 +32,18 @@ export const verifyOwnership = new Elysia()
 
         return { success: true, secretKey };
       }
-      return {
-        success: false,
-        message: "Domain already exist!!!",
-      };
+      if (result.userId === user?.id) {
+        return {
+          success: false,
+          redirect: true, // Add a boolean flag for easier frontend checking
+          message: "Domain already exist!!!",
+          id: result.id,
+        };
+      }
+
+      // 3. If domain exists but belongs to someone else
+      set.status = 403;
+      return { success: false, message: "Domain registered by another user." };
     },
     {
       body: VerifyOwnershipModel.verifyOwnershipRequest,
