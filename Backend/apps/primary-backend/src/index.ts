@@ -8,6 +8,8 @@ import { app as Scoring } from "./modules/scoring";
 import { subdomainController } from "./modules/subdomain";
 import { reputationController } from "./modules/reputaion";
 import { app as AddUser } from "./modules/add-user";
+import { aiChatApp } from "./modules/ai-chat";
+import { portScanModule } from "./modules/port-scan";
 
 const app = new Elysia()
   .use(
@@ -25,6 +27,8 @@ const app = new Elysia()
   .use(subdomainController)
   .use(reputationController)
   .use(AddUser)
+  .use(aiChatApp)
+  .use(portScanModule)
   .listen(8080);
 
 console.log(

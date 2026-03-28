@@ -88,7 +88,7 @@ export default function FindingsTable({ tls, email }: any) {
                   <td colSpan={3} className="py-24 text-center">
                     <div className="flex flex-col items-center gap-4">
                       <ShieldCheck className="w-12 h-12 text-green-500 opacity-50" />
-                      <p className="text-zinc-500 font-mono text-[10px] uppercase tracking-widest">
+                      <p className="text-zinc-300 font-mono text-[10px] uppercase tracking-widest">
                         [ NO VULNERABILITIES DETECTED ]
                       </p>
                     </div>
