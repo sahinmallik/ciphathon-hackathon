@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
@@ -28,7 +29,6 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [subdomainLoading, setSubdomainLoading] = useState(false);
 
-  // ✅ NEW STATES
   const [portData, setPortData] = useState<any>(null);
   const [portLoading, setPortLoading] = useState(false);
 
@@ -122,7 +122,6 @@ export default function DashboardPage() {
     if (isLoaded) runInitialScans();
   }, [domain, user, isLoaded]);
 
-  // DEEP SCAN
   const handleDeepDiscovery = async () => {
     if (!domain || !user) return;
 
@@ -144,7 +143,6 @@ export default function DashboardPage() {
     }
   };
 
-  // ✅ PORT SCAN HANDLER
   const handlePortScan = async () => {
     if (!domain) return;
 
@@ -222,7 +220,6 @@ export default function DashboardPage() {
                 contextData={{ scanData, reputation }}
               />
 
-              {/* ✅ PORT SCAN BUTTON */}
               <Button
                 onClick={handlePortScan}
                 disabled={portLoading}
@@ -246,7 +243,6 @@ export default function DashboardPage() {
   "
               >
                 <span className="flex items-center gap-2">
-                  {/* status dot */}
                   <span
                     className={`w-1.5 h-1.5 rounded-full ${
                       portLoading
@@ -258,7 +254,6 @@ export default function DashboardPage() {
                   {portLoading ? "SCANNING" : "SCAN PORTS"}
                 </span>
 
-                {/* subtle glow */}
                 <span className="absolute inset-0 rounded-lg bg-cyan-500/5 opacity-0 hover:opacity-100 transition duration-300 pointer-events-none" />
               </Button>
 
@@ -292,7 +287,6 @@ export default function DashboardPage() {
             reputation={reputation}
           />
 
-          {/* GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <FindingsTable
@@ -310,15 +304,11 @@ export default function DashboardPage() {
               />
             </div>
           </div>
-
-          {/* SUBDOMAIN */}
-          <div className="w-full">
-            <SubdomainCard data={subdomainData} loading={subdomainLoading} />
-          </div>
-
-          {/* ✅ PORT SCANNER CARD */}
           <div className="w-full">
             <PortScannerCard data={portData} loading={portLoading} />
+          </div>
+          <div className="w-full">
+            <SubdomainCard data={subdomainData} loading={subdomainLoading} />
           </div>
         </div>
       </main>
